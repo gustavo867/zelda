@@ -47,7 +47,7 @@ $ yarn start or expo start
 # Fork using GitHub official command line
 # If you don't have the GitHub CLI, use the web site to do that.
 
-$ gh repo fork gustavo867/ifood-clone
+$ gh repo fork gustavo867/zelda
 ```
 
 **Follow the steps below**
