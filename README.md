@@ -8,6 +8,7 @@
 - React Native
 - Expo
 - StyledComponents
+- AsyncStorage
 
 ## 💻 Getting Started
 
@@ -37,6 +38,8 @@ $ yarn start or expo start
 <div align="center">
     <img padding={20} src="./.github/screen1.jpg"height="800"></img>
     <img src="./.github/screen2.jpg" height="800"></img>
+    <img src="./.github/screen3.jpg" height="800"></img>
+    <img src="./.github/screen4.jpg" height="800"></img>
 </div>
 
 ## 🤔 How to contribute

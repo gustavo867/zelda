@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import * as S from "./styles";
 
-import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
 import imageUrl from "../../utils/imageUrl";
 
 export interface Games {
@@ -16,7 +17,7 @@ export interface Games {
 }
 
 const Shop: React.FC = () => {
-  const [games, setGames] = useState<Games[]>([]);
+  const [games, setGames] = useState<Games[] | null>(null);
   const [resize, setResize] = useState<
     "cover" | "contain" | "stretch" | "repeat" | "center" | undefined
   >("cover");
@@ -29,10 +30,40 @@ const Shop: React.FC = () => {
 
       setGames(data);
     });
+
+    if (games !== null) {
+      storeData();
+    }
   }, []);
 
+  async function storeData() {
+    const data = JSON.stringify(games);
+
+    try {
+      await AsyncStorage.setItem("@zelda_Data", data);
+    } catch (e) {
+      return;
+    }
+  }
+
+  async function clearStorage() {
+    await AsyncStorage.clear();
+  }
+
   useEffect(() => {
-    getData();
+    async function verifiedData() {
+      const value = await AsyncStorage.getItem("@zelda_Data");
+
+      if (value !== null) {
+        const data = JSON.parse(value);
+
+        setGames(data);
+      } else {
+        getData();
+      }
+    }
+
+    verifiedData();
   }, []);
 
   const changeResize = useCallback(() => {
@@ -40,21 +71,36 @@ const Shop: React.FC = () => {
   }, []);
 
   const navigateToGame = useCallback(
-    (item: Games) => {
+    async (item: Games) => {
       navigate("Game", { item });
     },
     [games]
   );
 
+  const navigateToCharacters = useCallback(() => {
+    navigate("Characters");
+  }, []);
+
+  const Empty = () => {
+    return (
+      <>
+        <S.Title>Loading</S.Title>
+        <S.Loading size="small" color="#FFF" />
+      </>
+    );
+  };
+
   const Item = (item: Games) => {
     const url = imageUrl(item.name);
 
     return (
-      <S.GameContainer onPress={() => navigateToGame(item)} delayPressIn={1}>
-        <S.GameImage resizeMode={resize} source={{ uri: url }} />
-        <S.ResizeButton onPress={changeResize}>
-          <Ionicons name="ios-resize" size={24} color="#FFFF" />
-        </S.ResizeButton>
+      <S.GameContainer>
+        <S.GameButton delayPressIn={1} onPress={() => navigateToGame(item)}>
+          <S.GameImage resizeMode={resize} source={{ uri: url }} />
+          <S.ResizeButton onPress={changeResize}>
+            <Ionicons name="ios-resize" size={24} color="#FFFF" />
+          </S.ResizeButton>
+        </S.GameButton>
         <S.GameName>{item.name}</S.GameName>
       </S.GameContainer>
     );
@@ -71,7 +117,11 @@ const Shop: React.FC = () => {
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
+        ListEmptyComponent={() => <Empty />}
       />
+      <S.Button onPress={navigateToCharacters}>
+        <S.Text>See Characters</S.Text>
+      </S.Button>
     </S.Container>
   );
 };

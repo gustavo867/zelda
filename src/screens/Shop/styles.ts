@@ -10,7 +10,7 @@ export const Container = styled.View`
 `;
 
 export const GamesList = styled.FlatList`
-  flex-grow: 1;
+  flex-grow: 0;
   margin-top: 25px;
 `;
 
@@ -22,8 +22,8 @@ export const Title = styled.Text`
   letter-spacing: 1.2px;
 `;
 
-export const GameContainer = styled.TouchableOpacity`
-  height: ${height * 0.8}px;
+export const GameContainer = styled.View`
+  height: ${height * 0.75}px;
   width: ${width}px;
   justify-content: center;
   align-items: center;
@@ -37,16 +37,23 @@ export const GameName = styled.Text`
 `;
 
 export const GameImage = styled.Image`
-  width: 80%;
-  height: 80%;
+  width: 100%;
+  height: 100%;
   border-radius: 24px;
+`;
+
+export const GameButton = styled.TouchableOpacity`
+  width: ${width * 0.8}px;
+  height: 90%;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const ResizeButton = styled.TouchableOpacity`
   position: absolute;
-  right: 55px;
-  bottom: ${height * 0.12}px;
-  z-index: 2;
+  right: 20px;
+  bottom: 20px;
+  z-index: 10;
 `;
 
 export const SmallText = styled.Text`
@@ -56,4 +63,24 @@ export const SmallText = styled.Text`
   padding-left: 20px;
   letter-spacing: 0.4px;
   margin-top: 12px;
+`;
+
+export const Loading = styled.ActivityIndicator``;
+
+export const Button = styled.TouchableOpacity`
+  width: ${width * 0.83}px;
+  height: 56px;
+  border-radius: 14px;
+  background-color: #3700b3;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  margin-top: 30px;
+`;
+
+export const Text = styled.Text`
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.4px;
 `;
