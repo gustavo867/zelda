@@ -65,7 +65,24 @@ export const SmallText = styled.Text`
   margin-top: 12px;
 `;
 
-export const Loading = styled.ActivityIndicator``;
+export const Loading = styled.ActivityIndicator`
+  margin-top: 15px;
+`;
+
+export const LoadingContainer = styled.View`
+  flex-direction: column;
+  height: ${height * 0.75}px;
+  width: ${width}px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const LoadingText = styled.Text`
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 1.2px;
+`;
 
 export const Button = styled.TouchableOpacity`
   width: ${width * 0.83}px;

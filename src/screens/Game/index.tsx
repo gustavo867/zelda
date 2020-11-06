@@ -1,5 +1,6 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import * as S from "./styles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Games } from "../Shop";
 import { useRoute } from "@react-navigation/native";
@@ -19,19 +20,46 @@ const Game: React.FC = () => {
 
   const { item } = route.params as Params;
 
+  async function verifiedFavorites() {
+    const value = await AsyncStorage.getItem("@zelda_Favorite");
+
+    if (value !== null) {
+      const data = JSON.parse(value);
+
+      setFavorites(data);
+    }
+  }
+
+  useEffect(() => {
+    verifiedFavorites();
+  }, []);
+
+  useEffect(() => {
+    async function handleData() {
+      const data = JSON.stringify(favorites);
+
+      await AsyncStorage.setItem("@zelda_Favorite", data);
+    }
+    handleData();
+  }, [favorites]);
+
+  const deleteFavorite = useCallback(async () => {
+    await favorites.forEach(async (favorite: string, index: number) => {
+      if (favorite === item._id) {
+        favorites.length === 0
+          ? setFavorites([])
+          : setFavorites(favorites.splice(index));
+      }
+
+      return;
+    });
+  }, [favorites]);
+
   const onHeartChange = useCallback(() => {
     const id = item._id;
 
     favorites.includes(id)
-      ? favorites.forEach((favorite: string, index: number) => {
-          if (favorite === id) {
-            const newArray = favorites.splice(index);
-
-            setFavorites(newArray);
-          }
-
-          return;
-        })
+      ? deleteFavorite()
       : setFavorites([...favorites, item._id]);
   }, [favorites]);
 

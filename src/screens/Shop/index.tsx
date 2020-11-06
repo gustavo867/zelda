@@ -46,10 +46,6 @@ const Shop: React.FC = () => {
     }
   }
 
-  async function clearStorage() {
-    await AsyncStorage.clear();
-  }
-
   useEffect(() => {
     async function verifiedData() {
       const value = await AsyncStorage.getItem("@zelda_Data");
@@ -83,10 +79,10 @@ const Shop: React.FC = () => {
 
   const Empty = () => {
     return (
-      <>
-        <S.Title>Loading</S.Title>
-        <S.Loading size="small" color="#FFF" />
-      </>
+      <S.LoadingContainer>
+        <S.LoadingText>Loading...</S.LoadingText>
+        <S.Loading size="large" color="#FFF" />
+      </S.LoadingContainer>
     );
   };
 
