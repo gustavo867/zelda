@@ -40,7 +40,7 @@ export const HeartButton = styled.TouchableOpacity`
 
 export const BoldText = styled.Text`
   color: #ffffff;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   line-height: 24px;
 `;
@@ -50,9 +50,12 @@ export const Description = styled.Text`
   font-size: 14px;
   font-weight: 400;
   line-height: 18px;
+  letter-spacing: 0.4px;
 `;
 
 export const Row = styled.View`
   flex-direction: row;
   align-items: center;
 `;
+
+export const Loading = styled.ActivityIndicator``;

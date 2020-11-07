@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import * as S from "./styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -17,6 +17,7 @@ const Game: React.FC = () => {
   const route = useRoute();
 
   const [favorites, setFavorites] = useContext<any>(FavoriteContext);
+  const [loading, setLoading] = useState(false);
 
   const { item } = route.params as Params;
 
@@ -26,7 +27,7 @@ const Game: React.FC = () => {
     if (value !== null) {
       const data = JSON.parse(value);
 
-      setFavorites(data);
+      setFavorites([...data]);
     }
   }
 
@@ -34,37 +35,37 @@ const Game: React.FC = () => {
     verifiedFavorites();
   }, []);
 
-  useEffect(() => {
-    async function handleData() {
-      const data = JSON.stringify(favorites);
-
-      await AsyncStorage.setItem("@zelda_Favorite", data);
-    }
-    handleData();
-  }, [favorites]);
-
   const deleteFavorite = useCallback(async () => {
+    setLoading(true);
     await favorites.forEach(async (favorite: string, index: number) => {
       if (favorite === item._id) {
-        favorites.length === 0
-          ? setFavorites([])
-          : setFavorites(favorites.splice(index));
-      }
+        const array: string[] = favorites;
+        array.splice(index, 1);
+        setFavorites((state: any) => state.splice(index, 1));
 
-      return;
+        await AsyncStorage.setItem("@zelda_Favorite", JSON.stringify(array));
+      }
     });
+    setLoading(false);
   }, [favorites]);
 
-  const onHeartChange = useCallback(() => {
+  const addHeart = useCallback(async () => {
+    const array: string[] = favorites;
+    array.push(...array, item._id);
+    setFavorites((state: any) => [...state, item._id]);
+
+    await AsyncStorage.setItem("@zelda_Favorite", JSON.stringify(array));
+  }, [favorites]);
+
+  const onHeartChange = useCallback(async () => {
     const id = item._id;
 
-    favorites.includes(id)
-      ? deleteFavorite()
-      : setFavorites([...favorites, item._id]);
+    favorites.includes(id) ? deleteFavorite() : addHeart();
   }, [favorites]);
 
   const verifiedHeart = useCallback(() => {
-    if (favorites.includes(item._id)) {
+    const id = item._id;
+    if (favorites.includes(id)) {
       return true;
     } else {
       return false;
@@ -74,12 +75,16 @@ const Game: React.FC = () => {
   return (
     <S.Container>
       <S.BackgroundImage source={{ uri: imageUrl(item.name) }} />
-      <S.HeartButton onPress={onHeartChange}>
-        <Ionicons
-          name={verifiedHeart() ? "ios-heart" : "ios-heart-empty"}
-          size={28}
-          color={verifiedHeart() ? "red" : "#FFFFFFFF"}
-        />
+      <S.HeartButton onPress={() => onHeartChange()}>
+        {loading === true ? (
+          <S.Loading size="small" color="red" />
+        ) : (
+          <Ionicons
+            name={verifiedHeart() === true ? "ios-heart" : "ios-heart-empty"}
+            size={35}
+            color={verifiedHeart() === true ? "red" : "red"}
+          />
+        )}
       </S.HeartButton>
       <S.Title>{item.name}</S.Title>
       <S.BottomContainer>
